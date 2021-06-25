@@ -111,7 +111,7 @@ const handleMethod = (e) => {
 }
 
 const fetch_prayer_times = async(country, city, method, year) => {
-    const response = await fetch(`http://api.aladhan.com/v1/calendarByCity?city=${city}&country=${country}&method=${method}&year=${year}&annual=true`);
+    const response = await fetch(`https://api.aladhan.com/v1/calendarByCity?city=${city}&country=${country}&method=${method}&year=${year}&annual=true`);
     const result = await response.json(); 
     prayer_times.push(result.data);
 }
