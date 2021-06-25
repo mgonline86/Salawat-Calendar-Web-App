@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salawat Calendar</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="main-container">
+        <h1 id="header-title">Salawat Calendar</h1>
+        <form id="main-form" onsubmit="handleSubmit(event)">
+            <label class='form-label'>
+                Country
+            </label>
+            <input 
+                class='form-input'
+                placeholder="Select a Country..."
+                type="list"
+                list="select-countries"
+                id="countries_input"
+                onchange="handleCountry(this)"
+                autocomplete="off"
+                required
+            >
+            <datalist id="select-countries">
+            </datalist>
+            <label class='form-label'>
+                City
+            </label>
+            <input 
+                class='form-input'
+                placeholder="Select a City..."
+                type="list"
+                list="select-cities"
+                id="cities_input"
+                onchange="handleCity(this)"
+                autocomplete="off"
+                required
+                disabled
+            >
+            <datalist id="select-cities">
+            </datalist>
+            <div class='form-input' id="period-container">
+                <div>
+                    <label class='form-label'>
+                        From
+                    </label>
+                    <input type="date" id="from-date" onchange="handleFromDate(this)" required/>
+                </div>
+                <div>
+                    <label class='form-label'>
+                        To
+                    </label>
+                    <input type="date" id="to-date" onchange="handletoDate(this)" required/>
+                </div>
+            </div>
+            <label class='form-label'>
+                Prayer Duration
+            </label>
+            <input class='form-input' type="number" value="0" min="0" max="60" id="duration" onchange="handleDuration(this)" required/>
+            <label class='form-label'>
+                Method
+            </label>
+            <select class='form-input' id="select-method"  onchange="handleMethod(this)" required>
+                <option selected disabled value="">Select a Method...</option>
+                <option value="1">1 - University of Islamic Sciences, Karachi</option>
+                <option value="2">2 - Islamic Society of North America</option>
+                <option value="3">3 - Muslim World League</option>
+                <option value="4">4 - Umm Al-Qura University, Makkah</option>
+                <option value="5">5 - Egyptian General Authority of Survey</option>
+                <option value="7">7 - Institute of Geophysics, University of Tehran</option>
+                <option value="8">8 - Gulf Region</option>
+                <option value="9">9 - Kuwait</option>
+                <option value="10">10 - Qatar</option>
+                <option value="11">11 - Majlis Ugama Islam Singapura, Singapore</option>
+                <option value="12">12 - Union Organization islamic de France</option>
+                <option value="13">13 - Diyanet İşleri Başkanlığı, Turkey</option>
+                <option value="14">14 - Spiritual Administration of Muslims of Russia</option>
+                <option value="0">0 - Shia Ithna-Ansari</option>
+            </select>
+            <button class="normal-btn" type="submit" >Download Calendar</button>
+        </form>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
