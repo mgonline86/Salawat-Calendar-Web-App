@@ -41,7 +41,6 @@ const all_countries = async () => {
 
 const handleCountry = async(e) =>{
     country = e.value;
-    console.log(country)
     const citiesInput = document.getElementById('cities_input');
     citiesInput.disabled = false;
     citiesInput.value = '';
@@ -74,7 +73,6 @@ const handleCountry = async(e) =>{
 
 const handleCity = (e) => {
     city = e.value
-    console.log(city)
     user_inputs['city'] = city
 }
 
@@ -84,7 +82,6 @@ const handleFromDate = (e) => {
         to_date.value = e.value
         user_inputs['to_date'] = e.value
     }
-    console.log(e.value)
     user_inputs['from_date'] = e.value
 }
 
@@ -96,17 +93,14 @@ const handletoDate = (e) => {
         e.value = prev_to_date
         return
     }
-    console.log(e.value)
     user_inputs['to_date'] = e.value
 }
 
 const handleDuration = (e) => {
-    console.log(e.value)
     user_inputs['duration'] = e.value
 }
 
 const handleMethod = (e) => {
-    console.log(e.value)
     user_inputs['method'] = e.value
 }
 
@@ -144,7 +138,6 @@ const row_creator = (d, prayer, duration) =>{
     }
 
     end_time = String(end_time_hr).padStart(2, '0') + ':' + String(end_time_min).padStart(2, '0')
-    console.log(end_time)
 
     row.push(start_time)
     row.push(end_time)
@@ -177,7 +170,6 @@ const structure_data = (prayer_times, from_date, to_date, duration) => {
 }
 
 const create_csv_file = (file_name, all_days_rows_list) => {
-    console.log (file_name,all_days_rows_list)
 
     let csvContent = "data:text/csv;charset=utf-8," 
     + all_days_rows_list.map(e => e.join(",")).join("\n");
@@ -214,9 +206,7 @@ const handleSubmit = (e) => {
         fetch_prayer_times(country, city, method, year)
     
     ))
-    .then(()=>console.log(prayer_times))
     .then(() => structure_data(prayer_times, from_date, to_date, duration))
-    .then(() => console.log(all_days_rows_list))
     .then(() => create_csv_file(file_name, all_days_rows_list))
 }
 
