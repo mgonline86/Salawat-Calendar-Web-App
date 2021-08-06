@@ -1,0 +1,27 @@
+{
+  "name": "website-app",
+  "version": "1.0.0",
+  "description": "This is a Web App to Create a custom Islamic prayer times calendar in .csv format that can be imported to your google calendar.",
+  "main": "(index.js)",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mgonline86/Salawat-Calendar-Web-App.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mgonline86/Salawat-Calendar-Web-App/issues"
+  },
+  "homepage": "https://github.com/mgonline86/Salawat-Calendar-Web-App#readme",
+  "dependencies": {
+    "@paiva/translation-google": "^1.0.9",
+    "express": "^4.17.1",
+    "puppeteer": "^10.1.0",
+    "puppeteer-extra": "^3.1.18",
+    "puppeteer-extra-plugin-stealth": "^2.7.8"
+  }
+}

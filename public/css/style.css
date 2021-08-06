@@ -60,7 +60,7 @@ form{
     display: flex;
 }
 .normal-btn{
-    margin: 30px;
+    margin: 10px;
     padding: 15px;
     font-size: x-large;
     font-family: sans-serif;
@@ -84,6 +84,25 @@ form{
     transform: translate(5px, 5px);
 }
 
+#user-action{
+    display: flex;
+}
+
+/* #add-to-google-calenda{
+    background-color: black;
+} */
+
+fieldset{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 1px solid #f8ab03;
+}
+
+legend {
+    margin:0 auto;
+    color: #f8ab03;
+}
 
 @media only screen and (max-width: 650px) {
     #period-container{

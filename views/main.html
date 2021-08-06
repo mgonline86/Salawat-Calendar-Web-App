@@ -10,7 +10,7 @@
     <meta name="author" content="Mohamed Soubhi, Tarek Eldeeb, Mohamed Gamal">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Salawat Calendar</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel='stylesheet' type='text/css' href='css/style.css' />
 </head>
 <body>
     <div id="main-container">
@@ -85,9 +85,11 @@
                 <option value="14">Spiritual Administration of Muslims of Russia</option>
                 <option value="0">Shia Ithna-Ansari</option>
             </select>
-            <button class="normal-btn" type="submit" >Download Calendar</button>
+            <div id="user-action">
+                            <button id="download-csv-button" class="normal-btn" type="submit" >Download CSV</button>
+            </div>
         </form>
     </div>
-    <script src="script.js"></script>
+    <script src="js/script.js"></script>
 </body>
 </html>

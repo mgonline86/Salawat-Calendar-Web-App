@@ -1,8 +1,34 @@
+// function getJsonObject(cb){
+//     // read text from URL location
+//     var request = new XMLHttpRequest();
+//     request.open('GET', '/countries+cities.json', true);
+//     request.send(null);
+//     request.onreadystatechange = function () {
+//         if (request.readyState === 4 && request.status === 200) {
+//             var type = request.getResponseHeader('Content-Type');
+
+//                     try {
+//                         cb(JSON.parse(request.responseText));
+//                     }catch(err) {
+//                         cb(err);
+//                     }
+//         }
+//     }
+// }
+
+// getJsonObject(function(object){
+//     //Do what you want with the object here
+//     console.log(object);
+// });
+
 // Global Variables
 let today = new Date();
 let dd = String(today.getDate()).padStart(2, '0');
 let mm = String(today.getMonth() + 1).padStart(2, '0');
 let yyyy = today.getFullYear();
+let timezone = ''
+let submit_type = '' 
+// let arabic = false;
 
 today = yyyy + '-' + mm + '-' + dd;
 
@@ -25,11 +51,29 @@ let all_days_rows_list = [
     ['Subject', 'Start Date', 'Start Time', 'End Time']
 ]
 
+// const translate = async(/*array*/) => {
+//     const response = await fetch('https://iam.cloud.ibm.com/identity/token?grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=QrMbsMeZEJ8HZ_6AcntyIWOqnpQqZm7J7EEp5oxge-Sr', {
+//         method: 'POST',
+//         mode: 'no-cors',
+//         headers: {
+//             'Content-Type': 'application/x-www-form-urlencoded'
+//         },
+//     });
+//     const x = await response
+//     console.log(x)
+//     const result = await response.json(); 
+//     const outcome = result.access_token;
+//     return outcome
+// }
+
 const all_countries = async () => {
     const response = await fetch('https://countriesnow.space/api/v0.1/countries/flag/unicode');
     const result = await response.json(); 
     const countries = result.data;
     countries.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))
+    // if (arabic === true) {
+    //     console.log(await translate(/*countries*/))
+    // }
     let countries_options = ''
     countries.forEach(country => {
         countries_options += `<option>${country.name}</option>\n`
@@ -106,7 +150,7 @@ const handleMethod = (e) => {
 
 const fetch_prayer_times = async(country, city, method, year) => {
     const response = await fetch(`https://api.aladhan.com/v1/calendarByCity?city=${city}&country=${country}&method=${method}&year=${year}&annual=true`);
-    const result = await response.json(); 
+    const result = await response.json();
     prayer_times.push(result.data);
 }
 
@@ -136,9 +180,9 @@ const row_creator = (d, prayer, duration) =>{
             }
         }
     }
-
+    
     end_time = String(end_time_hr).padStart(2, '0') + ':' + String(end_time_min).padStart(2, '0')
-
+    
     row.push(start_time)
     row.push(end_time)
     return row
@@ -147,7 +191,8 @@ const row_creator = (d, prayer, duration) =>{
 
 const structure_data = (prayer_times, from_date, to_date, duration) => {
     prayers = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha']
-    const structure_month = (prayer_times, from_date, to_date) => {
+        timezone = (prayer_times[0]['1'][0]['meta']['timezone']) 
+        const structure_month = (prayer_times, from_date, to_date) => {
         prayer_times.forEach((d) => {
            let current_date = parseInt(d['date']['timestamp']) * 1000
            current_date = new Date(current_date).toISOString()
@@ -184,6 +229,15 @@ const create_csv_file = (file_name, all_days_rows_list) => {
 }
 
 const handleSubmit = (e) => {
+    
+    if (e.submitter.id === 'download-csv-button') {
+        submit_type = 'csv'
+    }
+    
+    if (e.submitter.id === 'add_events_button') {
+        submit_type = 'google'
+    }
+
     e.preventDefault()
     document.getElementById('main-form').checkValidity();
     let {country, city, from_date, to_date, duration, method} = user_inputs
@@ -207,7 +261,142 @@ const handleSubmit = (e) => {
     
     ))
     .then(() => structure_data(prayer_times, from_date, to_date, duration))
-    .then(() => create_csv_file(file_name, all_days_rows_list))
+    .then(() => {
+        if (submit_type === 'csv') {
+            create_csv_file(file_name, all_days_rows_list)
+        }
+
+        if (submit_type === 'google') {
+            addPrayers()
+        }
+    })
 }
 
+
+// Google Calendar API Code
+// Client ID and API key from the Developer Console
+var CLIENT_ID = '230347783494-n91t29e4gc0m6r097haefulo68ve85f8.apps.googleusercontent.com';
+var API_KEY = 'AIzaSyA5BfLCot4Ss-WWYWKkoSP8CMT1APqjreg';
+
+// Array of API discovery doc URLs for APIs used by the quickstart
+var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
+
+// Authorization scopes required by the API; multiple scopes can be
+// included, separated by spaces.
+var SCOPES = "https://www.googleapis.com/auth/calendar";
+
+var authorizeButton = document.getElementById('authorize_button');
+var signoutButton = document.getElementById('signout_button');
+var addEventButton = document.getElementById('add_events_button');
+
+/**
+       *  On load, called to load the auth2 library and API client library.
+ */
+function handleClientLoad() {
+    gapi.load('client:auth2', initClient);
+}
+
+/**
+ *  Initializes the API client library and sets up sign-in state
+ *  listeners.
+ */
+function initClient() {
+    gapi.client.init({
+        apiKey: API_KEY,
+          clientId: CLIENT_ID,
+          discoveryDocs: DISCOVERY_DOCS,
+          scope: SCOPES
+        }).then(function () {
+            // Listen for sign-in state changes.
+            gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+            
+            // Handle the initial sign-in state.
+            updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+            authorizeButton.onclick = handleAuthClick;
+            signoutButton.onclick = handleSignoutClick;
+        }, function(error) {
+            appendPre(JSON.stringify(error, null, 2));
+        });
+    }
+
+    /**
+     *  Called when the signed in status changes, to update the UI
+     *  appropriately. After a sign-in, the API is called.
+     */
+    function updateSigninStatus(isSignedIn) {
+        if (isSignedIn) {
+            authorizeButton.style.display = 'none';
+            signoutButton.style.display = 'block';
+            addEventButton.style.display = 'block';
+        } else {
+            authorizeButton.style.display = 'block';
+            signoutButton.style.display = 'none';
+            addEventButton.style.display = 'none';
+        }
+    }
+    
+    /**
+     *  Sign in the user upon button click.
+     */
+    function handleAuthClick(event) {
+        gapi.auth2.getAuthInstance().signIn();
+    }
+    
+    /**
+     *  Sign out the user upon button click.
+     */
+    function handleSignoutClick(event) {
+        gapi.auth2.getAuthInstance().signOut();
+    }
+    
+    /**
+     * Append a pre element to the body containing the given message
+     * as its text node. Used to display the results of the API call.
+     *
+       * @param {string} message Text to be placed in pre element.
+     */
+      function appendPre(message) {
+          alert(message)
+        } 
+    
+    // Add Prayer Event
+    function addPrayerEvent(prayer) {
+        var prayer_date = prayer[1].split("-").reverse().join("-");
+        var event = {
+            'summary': prayer[0],
+            'start': {
+                'dateTime': prayer_date + "T" + prayer[2] + ":00",
+                'timeZone': timezone
+            },
+            'end': {
+                'dateTime': prayer_date + "T" + prayer[3] + ":00",
+                'timeZone': timezone
+            },
+            'reminders': {
+                'useDefault': false,
+                'overrides': [
+                    {'method': 'popup', 'minutes': 10}
+                ]
+            }
+        };
+        var request = gapi.client.calendar.events.insert({
+            'calendarId': 'primary',
+          'resource': event
+        });
+        
+        return request
+    }
+    
+
+async function addPrayers() {
+    all_days_rows_list.shift()
+    var t0 = performance.now()
+    for (const i of all_days_rows_list) {
+        await addPrayerEvent(i);
+        }
+        var t1 = performance.now()
+        console.log('All Events were Created!')
+        console.log('and it Took ' + (t1 - t0) / 1000 + ' sec')
+    }
+    
 all_countries()
