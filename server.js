@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const router = express.Router();
+const port = process.env.port || 5001
 
 app.use(express.static(path.join(__dirname, '/public')));
 
@@ -38,6 +39,6 @@ router.get('/',function(req,res){
 
 //add the router
 app.use('/', router);
-app.listen(process.env.port || 5501);
+app.listen(port);
 
-console.log('Running at Port 5501');
+console.log(`Running at Port ${port}`);
