@@ -19,9 +19,6 @@
   "homepage": "https://github.com/mgonline86/Salawat-Calendar-Web-App#readme",
   "dependencies": {
     "@paiva/translation-google": "^1.0.9",
-    "express": "^4.17.1",
-    "puppeteer": "^10.1.0",
-    "puppeteer-extra": "^3.1.18",
-    "puppeteer-extra-plugin-stealth": "^2.7.8"
+    "express": "^4.17.1"
   }
 }
