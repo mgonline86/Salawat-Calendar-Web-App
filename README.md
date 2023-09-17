@@ -27,7 +27,7 @@ This is a Web App to Create a custom Islamic prayer times calendar in .csv forma
 
 - or from android device ( open the android calender that syncronised with google calender and use the attached video method in the repo.
 
-# The Site is Deployed on Heroku on this [link](https://salawat-calendar.herokuapp.com/)
+# The Site is Deployed on Heroku on this [link](https://salawat-calendar.onrender.com/)
 
 ## Acknowledgements
 * Countries and Cities API used from [countriesnow.space](https://countriesnow.space/)
